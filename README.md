@@ -3,11 +3,11 @@ Mongo 2.6.11
 
 install MongoDB service as per https://github.com/nikunjness/mongo-ambari
 
-# IMPORTANT
+IMPORTANT
 make sure you change directory to home after completing the mongo-ambari service install
 cd
 
-# install gradle
+install gradle
 wget https://services.gradle.org/distributions/gradle-2.7-bin.zip
 
 unzip gradle-2.7-bin.zip
@@ -15,23 +15,23 @@ unzip gradle-2.7-bin.zip
 mv gradle-2.7 /opt/
 export GRADLE_HOME=/opt/gradle-2.7/bin/
 
-# download mongo-hadoop
+download mongo-hadoop
 wget https://github.com/mongodb/mongo-hadoop/archive/master.zip
 unzip master.zip
 cd mongo-hadoop-master/
 
-# compile the connectors, should take between 2-10min
+compile the connectors, should take between 2-10min
 ./gradlew jar
 
-# copy drivers to one directory
+copy drivers to one directory
 mkdir ~/drivers
 cd ~/drivers
 
-# download mongodb java drivers or build your own
-# http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/installation-guide/
+download mongodb java drivers or build your own
+http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/installation-guide/
 wget https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.jar
 
-# or build using this pom
+or build using this pom
 https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.pom
  
 cp ~/mongo-hadoop-master/core/build/libs/mongo-hadoop-core-1.5.0-SNAPSHOT.jar ~/drivers
@@ -40,12 +40,12 @@ cp ~/mongo-hadoop-master/hive/build/libs/mongo-hadoop-hive-1.5.0-SNAPSHOT.jar ~/
 cp ~/mongo-hadoop-master/spark/build/libs/mongo-hadoop-spark-1.5.0-SNAPSHOT.jar ~/drivers
 cp ~/mongo-hadoop-master/flume/build/libs/flume-1.5.0-SNAPSHOT.jar ~/drivers
 
-# copy drivers to hdp libs, needs these on the classpath
+copy drivers to hdp libs, needs these on the classpath
 cp -r ~/drivers/* /usr/hdp/current/hadoop-client/lib/
 
-# restart services in Ambari
+restart services in Ambari
 
-# create local user
+create local user
 cd
 sudo -u hdfs hdfs dfs -mkdir /user/root
 sudo -u hdfs hdfs dfs -chown -R root:hdfs /user/root
@@ -55,10 +55,10 @@ sudo -u hdfs hdfs dfs -chown -R root:hdfs /user/root
 
 wget http://www.barchartmarketdata.com/data-samples/mstf.csv
 
-# load data into mongo
+load data into mongo
 mongoimport mstf.csv --type csv --headerline -d marketdata -c minibars
 
-# check data is in mongo
+check data is in mongo
 [root@sandbox mongo-tutorial]# mongo
 MongoDB shell version: 2.6.11
 connecting to: test
@@ -78,18 +78,17 @@ switched to db marketdata
 }
 > exit
 
-# login to beeline
-# if you get error jdbc:hive2://localhost:10000 (closed)> Error: Failed to open new session: java.lang.RuntimeException: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: hive is not allowed to impersonate root (state=,code=0)
-# go to core-site and replace "users" with "*" for proxyusers for hive group
+login to beeline
+if you get error jdbc:hive2://localhost:10000 (closed)> Error: Failed to open new session: java.lang.RuntimeException: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: hive is not allowed to impersonate root (state=,code=0)
+go to core-site and replace "users" with "*" for proxyusers for hive group
 
-
-# make sure jars are copied to hdp libs otherwise will get the error in the jira below https://jira.mongodb.org/browse/HADOOP-224
+make sure jars are copied to hdp libs otherwise will get the error in the jira below https://jira.mongodb.org/browse/HADOOP-224
 hdfs dfs -put drivers/* /tmp/udfs
 
 beeline
 !connect jdbc:hive2://localhost:10000 “” ””
 
-# create_mongo_mapped_hive_table.hql
+create_mongo_mapped_hive_table.hql
 
 add jar hdfs://sandbox.hortonworks.com:8020/tmp/udfs/mongo-hadoop-hive-1.5.0-SNAPSHOT.jar;
 add jar hdfs://sandbox.hortonworks.com:8020/tmp/udfs/mongo-hadoop-core-1.5.0-SNAPSHOT.jar;
@@ -112,12 +111,12 @@ WITH SERDEPROPERTIES('mongo.columns.mapping'='{"objectid":"_id",
  "Symbol":"Symbol", "TS":"Timestamp", "Day":"Day", "Open":"Open", "High":"High", "Low":"Low", "Close":"Close", "Volume":"Volume"}')
 TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/marketdata.minibars');
 
-# if error Error: Error while processing statement: FAILED: Hive Internal Error: com.sun.jersey.api.client.ClientHandlerException(java.io.IOException: java.net.ConnectException: Connection refused) (state=08S01,code=12)
+if error Error: Error while processing statement: FAILED: Hive Internal Error: com.sun.jersey.api.client.ClientHandlerException(java.io.IOException: java.net.ConnectException: Connection refused) (state=08S01,code=12)
 
 shut down all services and restart the Sandbox, hive metastore ports most likely conflicting
 
-# query the table
-# select_from_mongo_mapped_hive_table.hql
+query the table
+select_from_mongo_mapped_hive_table.hql
 
 select * from bars where bars.volume > 5000000 and bars.volume < 10000000;
 
@@ -142,15 +141,15 @@ select * from bars where bars.volume > 5000000 and bars.volume < 10000000;
 | 564359776336db32f2b613b9  | MSFT         | 2010-06-07 16:00  | 7         | 25.3       | 25.31      | 25.29     | 25.29       | 6956406      |
 | 564359776336db32f2b616c7  | MSFT         | 2010-06-09 16:00  | 9         | 24.79      | 24.81      | 24.78     | 24.79       | 7953364      |
 
-# order by or any select into won’t work, check status of https://jira.mongodb.org/browse/HADOOP-101
+order by or any select into won’t work, check status of https://jira.mongodb.org/browse/HADOOP-101
 
 ### SPARK ###
 # https://databricks.com/blog/2015/03/20/using-mongodb-with-spark.html
 
 pyspark --jars drivers/mongo-hadoop-spark-1.5.0-SNAPSHOT.jar
 
-# Paste the following in PySpark shell
-# spark_mongo_integration.py
+Paste the following in PySpark shell
+spark_mongo_integration.py
 
 # set up parameters for reading from MongoDB via Hadoop input format
 config = {"mongo.input.uri": "mongodb://localhost:27017/marketdata.minibars"}
@@ -171,20 +170,21 @@ minBarRDD = minBarRawRDD.values()
 
 minBarRDD.saveAsTextFile("hdfs://sandbox.hortonworks.com:8020/user/root/spark-mongo-output3")
 
-# cat the file in hdfs
+cat the file in hdfs
 hdfs dfs -cat spark-mongo-output3/part-00000 | head -n 5
 
-### PIG
+### PIG ###
 # download enron dataset
 wget https://s3.amazonaws.com/mongodb-enron-email/enron_mongo.tar.bz2
 
 bzip2 -d enron_mongo.tar.bz2
 tar -xvf enron_mongo.tar
 
-# restore database
+restore database
 mongorestore dump/enron_mail/messages.bson
 
-# add user
+add user
+
 mongo
 
 use enron_mail
@@ -200,11 +200,11 @@ db.createUser(
 )
 
 
-# query mongodb, select all rows
+query mongodb, select all rows
 use enron_mail
 db.messages.find() 
 
-# create new mongodb database
+create new mongodb database
 use enron_processed
 db.createUser(
     {
@@ -217,7 +217,7 @@ db.createUser(
 )
 > exit
 
-# load_store_mongodb.pig, MAKE SURE YOU RUN WITH TEZ, WITH MR it’s OVER 15min
+load_store_mongodb.pig, MAKE SURE YOU RUN WITH TEZ, WITH MR it’s OVER 15min
 
 pig -x tez load_store_mongodb.pig
 
@@ -239,9 +239,8 @@ c = filter b by $1 is not null;
 STORE c INTO 'mongodb://writesUser:12345678@sandbox.hortonworks.com:27017/enron_processed.messages'
 USING com.mongodb.hadoop.pig.MongoInsertStorage('', '' );
 
-###################
-# load_store_bson.pig
-# make sure you run this in tez_local mode, we’re not working with HDFS here.
+load_store_bson.pig
+make sure you run this in tez_local mode, we’re not working with HDFS here.
 
 pig -x tez_local load_store_bson.pig
 
@@ -259,10 +258,10 @@ send_recip_grouped = GROUP send_recip_split_trimmed BY (from, to);
 send_recip_counted = FOREACH send_recip_grouped GENERATE group, COUNT($1) as count;
 STORE send_recip_counted INTO 'file:///tmp/enron_result.bson' using com.mongodb.hadoop.pig.BSONStorage;
 
-# review the output
+review the output
 head -n 5 /tmp/enron_result.bson/part-v001-o000-r-00000.bson
 
-# load messages in mongo format and store in Pig format
+load messages in mongo format and store in Pig format
 hdfs dfs -put dump/enron_mail/messages.bson /tmp/
 
 pig -x tez load_store_bson_hdfs.pig
@@ -281,11 +280,11 @@ send_recip_grouped = GROUP send_recip_split_trimmed BY (from, to);
 send_recip_counted = FOREACH send_recip_grouped GENERATE group, COUNT($1) as count;
 STORE send_recip_counted INTO 'hdfs://sandbox.hortonworks.com:8020/tmp/enronoutputpig' using PigStorage();
 
-# check output
+check output
 hdfs dfs -cat /tmp/enronoutputpig/part-v001-o000-r-00000 | head -n 5
 *************************************************************************************************************
 
-# cleanup
+cleanup
 hdfs dfs -rm -r spark-mongo-output*
 hdfs dfs -rm -r /tmp/messages.bson
 hdfs dfs -rm -r /tmp/enronoutputpig
