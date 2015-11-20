@@ -1,5 +1,5 @@
-# HDP 2.3.2
-# Mongo 2.6.11
+HDP 2.3.2
+Mongo 2.6.11
 
 install MongoDB service as per https://github.com/nikunjness/mongo-ambari
 
