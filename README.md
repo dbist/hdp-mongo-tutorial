@@ -1,13 +1,13 @@
 #####Sample tutorial on HDP integration with MongoDB using Ambari, Spark, Hive and Pig
 
-###Prerequisites
-###HDP 2.3.2 Sandbox
-###Mongo 2.6.11
+#####Prerequisites
+#####HDP 2.3.2 Sandbox
+#####Mongo 2.6.11
 
-####install MongoDB service as per https://github.com/nikunjness/mongo-ambari
+#####install MongoDB service as per https://github.com/nikunjness/mongo-ambari
 
 ####IMPORTANT
-####make sure you change directory to home after completing the mongo-ambari service install
+#####make sure you change directory to home after completing the mongo-ambari service install
 ```
 cd
 ```
@@ -21,6 +21,7 @@ export GRADLE_HOME=/opt/gradle-2.7/bin/
 ```
 
 ####download mongo-hadoop
+
 ```
 wget https://github.com/mongodb/mongo-hadoop/archive/master.zip
 unzip master.zip
@@ -39,12 +40,13 @@ cd ~/drivers
 ```
 
 ####download mongodb java drivers or build your own
-####http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/installation-guide/
+#####http://mongodb.github.io/mongo-java-driver/3.0/driver/getting-started/installation-guide/
+
 ```
 wget https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.jar
 ```
 
-####or build using this pom https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.pom
+#####or build using this pom https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.pom
 
 ```
 cp ~/mongo-hadoop-master/core/build/libs/mongo-hadoop-core-1.5.0-SNAPSHOT.jar ~/drivers
