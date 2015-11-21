@@ -108,11 +108,12 @@ switched to db marketdata
 ```
 
 ####login to beeline
-#### if you get error jdbc:hive2://localhost:10000 (closed)> Error: Failed to open new session: java.lang.RuntimeException: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: hive is not allowed to impersonate root (state=,code=0)
-####go to core-site and replace "users" with "*" for proxyusers for hive group
+#####if you get error jdbc:hive2://localhost:10000 (closed)> Error: Failed to open new session: java.lang.RuntimeException: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: hive is not allowed to impersonate root (state=,code=0)
+#####go to core-site and replace "users" with "*" for proxyusers for hive group
 
 
 ####make sure jars are copied to hdp libs otherwise will get the error in the jira below https://jira.mongodb.org/browse/HADOOP-224
+
 ```
 hdfs dfs -put drivers/* /tmp/udfs
 
