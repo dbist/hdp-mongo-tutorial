@@ -142,7 +142,7 @@ WITH SERDEPROPERTIES('mongo.columns.mapping'='{"objectid":"_id",
 TBLPROPERTIES('mongo.uri'='mongodb://localhost:27017/marketdata.minibars');
 ```
 
-####if error Error: Error while processing statement: FAILED: Hive Internal Error: com.sun.jersey.api.client.ClientHandlerException(java.io.IOException: java.net.ConnectException: Connection refused) (state=08S01,code=12)
+#####if you encounter error: Error while processing statement: FAILED: Hive Internal Error: com.sun.jersey.api.client.ClientHandlerException(java.io.IOException: java.net.ConnectException: Connection refused) (state=08S01,code=12)
 
 ####shut down all services and restart the Sandbox, hive metastore ports most likely conflicting
 
@@ -173,10 +173,10 @@ select * from bars where bars.volume > 5000000 and bars.volume < 10000000;
 | 564359776336db32f2b616c7  | MSFT         | 2010-06-09 16:00  | 9         | 24.79      | 24.81      | 24.78     | 24.79       | 7953364      |
 ```
 
-#### order by or any select into won’t work, check status of https://jira.mongodb.org/browse/HADOOP-101
+####order by or any select into won’t work, check status of https://jira.mongodb.org/browse/HADOOP-101
 
 ####SPARK
-####https://databricks.com/blog/2015/03/20/using-mongodb-with-spark.html
+#####https://databricks.com/blog/2015/03/20/using-mongodb-with-spark.html
 
 ```
 pyspark --jars drivers/mongo-hadoop-spark-1.5.0-SNAPSHOT.jar
