@@ -1,12 +1,12 @@
-#####Sample tutorial on HDP integration with MongoDB using Ambari, Spark, Hive and Pig
+##Sample tutorial on HDP integration with MongoDB using Ambari, Spark, Hive and Pig
 
-#####Prerequisites
+####**Prerequisites**
 #####HDP 2.3.2 Sandbox
 #####Mongo 2.6.11
 
 #####install MongoDB service as per https://github.com/nikunjness/mongo-ambari
 
-####IMPORTANT
+####**IMPORTANT**
 #####make sure you change directory to home after completing the mongo-ambari service install
 ```
 cd
@@ -46,7 +46,8 @@ cd ~/drivers
 wget https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.jar
 ```
 
-#####or build using this pom https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.pom
+####or build using the following pom
+#####https://oss.sonatype.org/content/repositories/releases/org/mongodb/mongodb-driver/3.0.4/mongodb-driver-3.0.4.pom
 
 ```
 cp ~/mongo-hadoop-master/core/build/libs/mongo-hadoop-core-1.5.0-SNAPSHOT.jar ~/drivers
@@ -72,7 +73,7 @@ sudo -u hdfs hdfs dfs -chown -R root:hdfs /user/root
 ```
 
 ####HIVE
-####https://www.mongodb.com/blog/post/using-mongodb-hadoop-spark-part-1-introduction-setup
+#####https://www.mongodb.com/blog/post/using-mongodb-hadoop-spark-part-1-introduction-setup
 
 ```
 wget http://www.barchartmarketdata.com/data-samples/mstf.csv
@@ -109,10 +110,11 @@ switched to db marketdata
 
 ####login to beeline
 #####if you get error jdbc:hive2://localhost:10000 (closed)> Error: Failed to open new session: java.lang.RuntimeException: java.lang.RuntimeException: org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.security.authorize.AuthorizationException): User: hive is not allowed to impersonate root (state=,code=0)
-#####go to core-site and replace "users" with "*" for proxyusers for hive group
+#####go to core-site and replace "users" with "*" in proxyusers for hive group
 
 
-####make sure jars are copied to hdp libs otherwise will get the error in the jira below https://jira.mongodb.org/browse/HADOOP-224
+####make sure jars are copied to hdp libs otherwise will get the error in the jira below 
+#####https://jira.mongodb.org/browse/HADOOP-224
 
 ```
 hdfs dfs -put drivers/* /tmp/udfs
@@ -173,7 +175,8 @@ select * from bars where bars.volume > 5000000 and bars.volume < 10000000;
 | 564359776336db32f2b616c7  | MSFT         | 2010-06-09 16:00  | 9         | 24.79      | 24.81      | 24.78     | 24.79       | 7953364      |
 ```
 
-####order by or any select into won’t work, check status of https://jira.mongodb.org/browse/HADOOP-101
+####order by or any select into won’t work, check status of
+#####https://jira.mongodb.org/browse/HADOOP-101
 
 ####SPARK
 #####https://databricks.com/blog/2015/03/20/using-mongodb-with-spark.html
@@ -212,7 +215,7 @@ hdfs dfs -cat spark-mongo-output3/part-00000 | head -n 5
 ```
 
 ####PIG
-#### download enron dataset
+####download enron dataset
 
 ```
 wget https://s3.amazonaws.com/mongodb-enron-email/enron_mongo.tar.bz2
@@ -259,13 +262,13 @@ db.createUser(
 > exit
 ```
 
-####MAKE SURE YOU RUN WITH TEZ, WITH MR it’s OVER 15min
+####**Make sure you run the following Pig script in Tez mode, in MR mode it will run approx 15minutes**
 
 ```
 pig -x tez load_store_mongodb.pig
 ```
 
-#### make sure you run this in tez_local mode, we’re not working with HDFS here.
+#### make sure you run the following Pig script in tez_local mode, we’re not working with HDFS here.
 
 ```
 pig -x tez_local load_store_bson.pig
@@ -299,3 +302,4 @@ hdfs dfs -rm -r /tmp/enronoutputpig
 ```
 
 ####Contributions welcome, big thanks to nikunjness for mongo-ambari service
+
